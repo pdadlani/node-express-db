@@ -44,8 +44,24 @@ server.get('/api/lessons/:id', (req, res) => {
     })
     .catch(error => {
       res.status(500).json({ message: "unable to perform operation" });
+    });
+});
+
+server.delete('/api/lessons/:id', (req, res) => {
+  const { id } = req.params;
+
+  Lessons.remove(id)
+    .then(count => {
+      if (count > 0) {
+        res.status(200).json({ message: 'Successfully deleted.' });
+      } else {
+        res.status(404).json({ message: 'Unable to locate record.' });
+      }
     })
-})
+    .catch(error => {
+      res.status(500).json({ message: 'Unable to delete lesson.' });
+    });
+});
 
 server.listen(PORT, () => {
   console.log(`\n*** Server running on port ${PORT} ***\n`);
