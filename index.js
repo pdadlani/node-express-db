@@ -27,7 +27,23 @@ server.get('/api/lessons', (req, res) => {
       res.status(200).json(lessons);
     })
     .catch(error => {
-      res.status(500).json({ message: "unable to retrieve lessons."})
+      res.status(500).json({ message: "unable to retrieve lessons."});
+    });
+});
+
+server.get('/api/lessons/:id', (req, res) => {
+  const { id } = req.params;
+
+  Lessons.findById(id)
+    .then(lesson => {
+      if (lesson) {
+        res.status(200).json(lesson);
+      } else {
+        res.status(404).json({ message: "record not found." });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({ message: "unable to perform operation" });
     })
 })
 

@@ -5,7 +5,8 @@ const db = knex(config.development);
 
 module.exports = {
   add,
-  find
+  find,
+  findById
 };
 
 async function add(lesson) {
@@ -16,4 +17,10 @@ async function add(lesson) {
 
 function find() {
   return db('lessons');
+}
+
+function findById(id) {
+  return db('lessons')
+    .where({ id })
+    .first()
 }
