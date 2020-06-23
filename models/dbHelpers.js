@@ -7,7 +7,8 @@ module.exports = {
   add,
   find,
   findById,
-  remove
+  remove,
+  update
 };
 
 async function add(lesson) {
@@ -30,4 +31,15 @@ function remove(id) {
   return db('lessons')
     .where({ id })
     .del();
+}
+
+function update(id, changes) {
+  return (
+    db('lessons')
+      .where({ id })
+      .update(changes)
+      .then(() => {
+        return findById(id);
+      })
+  );
 }
