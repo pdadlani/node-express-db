@@ -80,6 +80,39 @@ server.patch('/api/lessons/:id', (req, res) => {
     });
 });
 
+server.post("/api/lessons/:id/messages", (req, res) => {
+  const { id } = req.params;
+  const msg = req.body;
+
+  if (!msg.lesson_id) {
+    msg['lesson_id'] = parseInt(id, 10)
+  }
+
+  Lessons.findById(id)
+    .then(lesson => {
+      if (!lesson) {
+        res.status(404).json({ message: "invalid id for lesson." });
+      }
+      // check for all required fields
+      if (!msg.sender || !msg.text) {
+        res.status(400).json({ message: "Must provide both sender and text values." });
+      }
+      // if all the above checks pass, then we can add our message
+      Lessons.addMessage(msg, id)
+        .then(message => {
+          if (message) {
+            res.status(200).json(message);
+          }
+        })
+        .catch(error => {
+          res.status(500).json({ message: "Failed to add message." });
+        })
+    })
+    .catch(error => {
+      res.status(500).json({ message: "Error finding lesson with given id." });
+    });
+});
+
 server.listen(PORT, () => {
   console.log(`\n*** Server running on port ${PORT} ***\n`);
 });
