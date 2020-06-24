@@ -113,7 +113,34 @@ server.post("/api/lessons/:id/messages", (req, res) => {
     });
 });
 
+server.get('/api/lessons/:id/messages', (req, res) => {
+  const { id } = req.params;
+
+  Lessons.findAllLessonMessages(id)
+    .then(lessons => {
+      res.status(200).json(lessons)
+    })
+    .catch(error => {
+      res.status(500).json({ message: "Error retrieving message." })
+    });
+});
+
+server.delete('/api/messages/:id', (req, res) => {
+  const { id } = req.params;
+
+  Lessons.removeMessage(id)
+    .then(count => {
+      if (count > 0) {
+        res.status(200).json({ message: `Message with id ${id} successfully deleted.` });
+      } else {
+        res.status(404).json({ message: `Unable to locate message with id ${id}.` });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({ message: "Error deleting message." });
+    });
+});
+
 server.listen(PORT, () => {
   console.log(`\n*** Server running on port ${PORT} ***\n`);
 });
-
